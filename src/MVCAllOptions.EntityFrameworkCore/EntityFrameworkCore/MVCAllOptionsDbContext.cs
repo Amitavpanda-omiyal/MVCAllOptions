@@ -1,3 +1,5 @@
+using MVCAllOptions.Orders;
+using MVCAllOptions.Orders.EntityFrameworkCore;
 using Volo.Payment.EntityFrameworkCore;
 using Volo.Abp.Elsa;
 using Volo.Abp.Elsa.EntityFrameworkCore;
@@ -34,16 +36,19 @@ namespace MVCAllOptions.EntityFrameworkCore;
 [ReplaceDbContext(typeof(IIdentityProDbContext))]
 [ReplaceDbContext(typeof(ISaasDbContext))]
 [ReplaceDbContext(typeof(IAbpElsaDbContext))]
+[ReplaceDbContext(typeof(IOrdersDbContext))]
 [ConnectionStringName("Default")]
 public class MVCAllOptionsDbContext :
     AbpDbContext<MVCAllOptionsDbContext>,
     ISaasDbContext,
     IIdentityProDbContext,
-    IAbpElsaDbContext
+    IAbpElsaDbContext,
+    IOrdersDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
     public DbSet<Book> Books { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     #region Entities from the modules
 
@@ -85,6 +90,8 @@ public class MVCAllOptionsDbContext :
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.ConfigureOrders();
 
         builder.ConfigurePayment();
         builder.ConfigureElsa();
