@@ -1,0 +1,19 @@
+@page
+@using MVCAllOptions.Orders.Localization
+@using MVCAllOptions.Orders.Web.Pages.Orders
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model MVCAllOptions.Orders.Web.Pages.Orders.CreateModalModel
+@inject IStringLocalizer<OrdersResource> L
+@{
+    Layout = null;
+}
+<abp-dynamic-form abp-model="Order" asp-page="/Orders/CreateModal">
+    <abp-modal>
+        <abp-modal-header title="@L["NewOrder"].Value"></abp-modal-header>
+        <abp-modal-body>
+            <abp-form-content />
+        </abp-modal-body>
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)"></abp-modal-footer>
+    </abp-modal>
+</abp-dynamic-form>

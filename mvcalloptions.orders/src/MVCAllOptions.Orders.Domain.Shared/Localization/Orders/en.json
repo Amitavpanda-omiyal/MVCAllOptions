@@ -1,0 +1,20 @@
+{
+  "culture": "en",
+  "texts": {
+    "MyAccount": "My account",
+    "SamplePageMessage": "A sample page for the Orders module",
+    "Menu:Orders": "Orders",
+    "Orders": "Orders",
+    "NewOrder": "New Order",
+    "CustomerName": "Customer Name",
+    "BookName": "Book Name",
+    "BookId": "Book",
+    "State": "State",
+    "CreationTime": "Creation Time",
+    "SelectBook": "Select a book",
+    "CreatedSuccessfully": "Created successfully!",
+    "Enum:OrderState.0": "Placed",
+    "Enum:OrderState.1": "Delivered",
+    "Enum:OrderState.2": "Canceled"
+  }
+}
