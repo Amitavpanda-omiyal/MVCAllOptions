@@ -18,4 +18,7 @@ public class CreateUpdateBookDto
 
     [Required]
     public float Price { get; set; }
+
+    [Range(0, int.MaxValue)]
+    public int StockCount { get; set; }
 }

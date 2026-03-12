@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using MVCAllOptions.Integration;
+using MVCAllOptions.Orders.Events;
 using MVCAllOptions.Orders.Permissions;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.EventBus.Distributed;
 using System.Linq.Dynamic.Core;
 
 namespace MVCAllOptions.Orders;
@@ -17,15 +19,18 @@ public class OrderAppService : OrdersAppService, IOrderAppService
     private readonly IRepository<Order, Guid> _repository;
     private readonly OrderToOrderDtoMapper _mapper;
     private readonly IBookIntegrationService _bookIntegration;
+    private readonly IDistributedEventBus _eventBus;
 
     public OrderAppService(
         IRepository<Order, Guid> repository,
         OrderToOrderDtoMapper mapper,
-        IBookIntegrationService bookIntegration)
+        IBookIntegrationService bookIntegration,
+        IDistributedEventBus eventBus)
     {
         _repository = repository;
         _mapper = mapper;
         _bookIntegration = bookIntegration;
+        _eventBus = eventBus;
     }
 
     private static readonly HashSet<string> ValidSortFields = new(StringComparer.OrdinalIgnoreCase)
@@ -68,6 +73,14 @@ public class OrderAppService : OrdersAppService, IOrderAppService
         var order = new Order(GuidGenerator.Create(), input.BookId, input.CustomerName);
 
         await _repository.InsertAsync(order, autoSave: true);
+
+        // Publish event — Books module will hear this and decrement StockCount
+        await _eventBus.PublishAsync(new OrderPlacedEto
+        {
+            BookId = order.BookId,
+            CustomerName = order.CustomerName
+        });
+
         return _mapper.Map(order);
     }
 }
