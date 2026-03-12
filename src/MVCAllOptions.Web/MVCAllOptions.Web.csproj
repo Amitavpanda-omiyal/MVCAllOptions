@@ -46,6 +46,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.2" />
     <PackageReference Include="DistributedLock.Redis" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.260121.1" />
+    <PackageReference Include="Microsoft.Agents.AI.Workflows" Version="1.0.0-preview.260121.1" />
+    <PackageReference Include="Microsoft.Agents.AI.DevUI" Version="1.0.0-preview.260121.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MVCAllOptions.Application\MVCAllOptions.Application.csproj" />

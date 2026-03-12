@@ -7,6 +7,7 @@ using MVCAllOptions.Permissions;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.EventBus.Distributed;
 using System.Linq.Dynamic.Core;
 
 namespace MVCAllOptions.Books;
@@ -15,10 +16,14 @@ namespace MVCAllOptions.Books;
 public class BookAppService : ApplicationService, IBookAppService
 {
     private readonly IRepository<Book, Guid> _repository;
+    private readonly IDistributedEventBus _distributedEventBus;
 
-    public BookAppService(IRepository<Book, Guid> repository)
+    public BookAppService(
+        IRepository<Book, Guid> repository,
+        IDistributedEventBus distributedEventBus)
     {
-        _repository = repository;
+        _repository          = repository;
+        _distributedEventBus = distributedEventBus;
     }
 
     public async Task<BookDto> GetAsync(Guid id)
@@ -49,6 +54,21 @@ public class BookAppService : ApplicationService, IBookAppService
     {
         var book = ObjectMapper.Map<CreateUpdateBookDto, Book>(input);
         await _repository.InsertAsync(book);
+
+        // Publish a distributed event — BookCreatedEventHandler will pick it up
+        // and trigger the MAF Book Enrichment Workflow in the AgentWorkflows service.
+        // Using the default LocalDistributedEventBus (in-process) for the monolith;
+        // swap to RabbitMQ / Azure Service Bus in a microservice deployment with
+        // zero code changes here.
+        await _distributedEventBus.PublishAsync(new BookCreatedEto
+        {
+            BookId      = book.Id,
+            Name        = book.Name,
+            Type        = book.Type.ToString(),
+            Price       = book.Price,
+            PublishDate = book.PublishDate.ToString("yyyy-MM-dd")
+        });
+
         return ObjectMapper.Map<Book, BookDto>(book);
     }
 

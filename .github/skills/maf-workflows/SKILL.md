@@ -310,3 +310,13 @@ Target framework: `net10.0` (required by preview packages).
 - MAF workflow docs: `https://learn.microsoft.com/en-us/agent-framework/workflows/`
 - DevUI known issues: `https://github.com/microsoft/agent-framework/issues/2865`
 - Community samples: `https://github.com/webmaxru/awesome-microsoft-agent-framework`
+
+### ABP AI Integration
+
+- ABP AI Infrastructure overview: `https://abp.io/docs/10.2/framework/infrastructure/artificial-intelligence`
+  — Workspace concept, `Volo.Abp.AI` install, `IChatClient` / `IChatClientAccessor`, supported AI libraries
+- ABP Microsoft Agent Framework integration: `https://abp.io/docs/latest/framework/infrastructure/artificial-intelligence/microsoft-agent-framework`
+  — Using `IChatClient.CreateAIAgent()` inside ABP app services, typed workspace injection (`IChatClient<TWorkspace>`), `AbpAIWorkspaceOptions` configuration
+- Key pattern from docs: MAF is the **recommended choice** for ABP applications (successor to AutoGen + Semantic Kernel).
+  Inject `IChatClient` (or `IChatClient<TWorkspace>`) directly into Application Services and call `_chatClient.CreateAIAgent(instructions)` — no separate host required for agent logic.
+  The `AgentWorkflows` host in this project adds **DevUI visualisation** on top of that baseline.

@@ -49,5 +49,4 @@ namespace MVCAllOptions;
     )]
 public class MVCAllOptionsApplicationModule : AbpModule
 {
-
 }

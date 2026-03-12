@@ -473,6 +473,7 @@ abp suite generate --entity .suite/entities/Book.json --solution ./MVCAllOptions
 |-------|-------------|------|
 | `maf-workflows` | MAF agents, fan-out/fan-in workflows, DevUI, executor patterns | `.github/skills/maf-workflows/SKILL.md` |
 | `code-review` | ABP-aware code review of unstaged/staged/branch/commit changes against all `.cursor/rules/` | `.github/skills/code-review/SKILL.md` |
+| `abp-ai-management` | ABP AI Management module (Pro): installing, configuring workspaces, IChatClient usage, chat widgets (MVC), custom IChatClientFactory, IWorkspaceConfigurationStore, permissions, remote/microservice client scenarios, Semantic Kernel and MAF integration | `.github/skills/abp-ai-management/SKILL.md` |
 
 ---
 
