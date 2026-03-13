@@ -1,0 +1,22 @@
+@page
+@using MVCAllOptions.Localization
+@using MVCAllOptions.Web.Pages.OrderReport
+@using Microsoft.Extensions.Localization
+@model IndexModel
+@inject IStringLocalizer<MVCAllOptionsResource> L
+@section scripts
+{
+    <abp-script src="/Pages/OrderReport/Index.js" />
+}
+<abp-card>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Menu:OrderReport"]</abp-card-title>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <abp-table id="OrderReportTable" striped-rows="true" />
+    </abp-card-body>
+</abp-card>
