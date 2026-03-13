@@ -9,4 +9,6 @@ public class MVCAllOptionsMenus
     public const string HostDashboard = Prefix + ".HostDashboard";
     
     public const string TenantDashboard = Prefix + ".TenantDashboard";
+
+    public const string OrderReport = Prefix + ".OrderReport";
 }

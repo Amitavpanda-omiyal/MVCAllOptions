@@ -108,8 +108,13 @@ public class MVCAllOptionsMenuContributor : IMenuContributor
                 "BooksStore.Books",
                 l["Menu:Books"],
                 url: "/Books"
-                ).RequirePermissions(MVCAllOptionsPermissions.Books.Default) 
-            )
+                ).RequirePermissions(MVCAllOptionsPermissions.Books.Default)
+            ).AddItem(
+            new ApplicationMenuItem(
+                MVCAllOptionsMenus.OrderReport,
+                l["Menu:OrderReport"],
+                url: "/OrderReport"
+            ))
         );
         
         return Task.CompletedTask;
