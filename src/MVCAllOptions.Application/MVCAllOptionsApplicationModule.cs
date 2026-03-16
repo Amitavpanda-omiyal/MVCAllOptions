@@ -20,6 +20,8 @@ using Volo.CmsKit;
 using Volo.Chat;
 using Volo.AIManagement;
 using Volo.AIManagement.Client;
+using Volo.AIManagement.Factory;
+using MVCAllOptions.AI;
 
 namespace MVCAllOptions;
 
@@ -49,4 +51,11 @@ namespace MVCAllOptions;
     )]
 public class MVCAllOptionsApplicationModule : AbpModule
 {
+    public override void ConfigureServices(ServiceConfigurationContext context)
+    {
+        Configure<ChatClientFactoryOptions>(options =>
+        {
+            options.AddFactory<BookAwareOpenAIChatClientFactory>("OpenAI");
+        });
+    }
 }
