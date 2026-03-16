@@ -1,5 +1,7 @@
 using Microsoft.Extensions.AI;
 using OllamaSharp;
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Volo.AIManagement.Workspaces;
 using Volo.AIManagement.Factory;
@@ -13,9 +15,13 @@ public class OllamaChatClientFactory : IChatClientFactory, ITransientDependency
 
     public Task<IChatClient> CreateAsync(ChatClientCreationConfiguration configuration)
     {
-        var client = new OllamaApiClient(
-            configuration.ApiBaseUrl ?? "http://localhost:11434",
-            configuration.ModelName);
+        var baseUrl = configuration.ApiBaseUrl ?? "http://localhost:11434";
+        var httpClient = new HttpClient
+        {
+            BaseAddress = new Uri(baseUrl),
+            Timeout = TimeSpan.FromMinutes(10)
+        };
+        var client = new OllamaApiClient(httpClient, configuration.ModelName);
 
         return Task.FromResult<IChatClient>(client);
     }

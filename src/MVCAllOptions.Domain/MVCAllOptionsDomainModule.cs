@@ -7,6 +7,7 @@ using Volo.Payment;
 using Volo.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Linq;
 using MVCAllOptions.Localization;
 using MVCAllOptions.MultiTenancy;
 using System;
@@ -37,11 +38,16 @@ using Volo.CmsKit.Newsletters;
 using Microsoft.Extensions.AI;
 using Volo.Abp.AI;
 using Volo.AIManagement;
+using Volo.AIManagement.Embeddings;
 using Volo.AIManagement.Factory;
 using Volo.AIManagement.OpenAI;
-using OpenAI;
-using System.ClientModel;
-using OllamaSharp;
+using Volo.AIManagement.OpenAI.Embeddings;
+using Volo.AIManagement.Ollama;
+using Volo.AIManagement.Ollama.Embeddings;
+using Volo.AIManagement.VectorStores;
+using Volo.AIManagement.VectorStores.Pgvector;
+using Volo.AIManagement.DocumentProcessing;
+using MVCAllOptions.DocumentProcessing;
 
 namespace MVCAllOptions;
 
@@ -74,6 +80,8 @@ namespace MVCAllOptions;
     typeof(CmsKitProDomainModule),
     typeof(AIManagementDomainModule),
     typeof(AIManagementOpenAIModule),
+    typeof(AIManagementOllamaModule),
+    typeof(AIManagementPgvectorModule),
     typeof(BlobStoringDatabaseDomainModule)
     )]
 public class MVCAllOptionsDomainModule : AbpModule
@@ -96,13 +104,37 @@ public class MVCAllOptionsDomainModule : AbpModule
             );
         });
 
-        Configure<ChatClientFactoryOptions>(options =>
+        Configure<EmbeddingClientFactoryOptions>(options =>
         {
-            options.AddFactory<OllamaChatClientFactory>("Ollama");
+            options.AddFactory<OllamaEmbeddingClientFactory>("Ollama");
+            options.AddFactory<OpenAIEmbeddingClientFactory>("OpenAI");
+        });
+
+        Configure<VectorStoreFactoryOptions>(options =>
+        {
+            options.AddFactory<PgvectorStoreFactory>("Pgvector");
         });
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+    }
+
+    public override void PostConfigureServices(ServiceConfigurationContext context)
+    {
+        // Replace the built-in PdfExtractor with SanitizedPdfExtractor to prevent
+        // PostgreSQL 22P05 errors caused by null bytes / control characters in
+        // technical PDFs (e.g. NFPA standards, scanned documents).
+        var pdfDescriptor = context.Services
+            .FirstOrDefault(sd =>
+                sd.ServiceType == typeof(IDocumentTextExtractor) &&
+                sd.ImplementationType == typeof(PdfExtractor));
+
+        if (pdfDescriptor != null)
+            context.Services.Remove(pdfDescriptor);
+
+        // Keep PdfExtractor available as a concrete type so SanitizedPdfExtractor can inject it.
+        context.Services.TryAddTransient<PdfExtractor>();
+        context.Services.AddTransient<IDocumentTextExtractor, SanitizedPdfExtractor>();
     }
 }

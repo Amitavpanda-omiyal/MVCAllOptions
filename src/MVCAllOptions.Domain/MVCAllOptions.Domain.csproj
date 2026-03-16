@@ -6,6 +6,8 @@
     <RootNamespace>MVCAllOptions</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Volo.AIManagement.Ollama" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.AIManagement.VectorStores.Pgvector" Version="10.2.0-rc.1" />
     <ProjectReference Include="..\MVCAllOptions.Domain.Shared\MVCAllOptions.Domain.Shared.csproj" />
     <PackageReference Include="Volo.Forms.Domain" Version="10.2.0-rc.1" />
     <PackageReference Include="Volo.Abp.Elsa.Domain" Version="10.2.0-rc.1" />
@@ -39,7 +41,7 @@
     <PackageReference Include="Volo.Abp.Gdpr.Domain" Version="10.2.0-rc.1" />
     <PackageReference Include="Volo.CmsKit.Pro.Domain" Version="10.2.0-rc.1" />
     <PackageReference Include="Volo.AIManagement.Domain" Version="10.2.0-rc.1" />
-    <PackageReference Include="OllamaSharp" Version="5.3.5" />
+    <PackageReference Include="OllamaSharp" Version="5.4.16" />
     <PackageReference Include="Volo.AIManagement.OpenAI" Version="10.2.0-rc.1" />
   </ItemGroup>
 </Project>

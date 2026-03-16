@@ -457,6 +457,130 @@ await foreach (var chunk in _chatService.StreamChatCompletionsAsync("WorkspaceNa
 
 ---
 
+## Step 10 — RAG with File Upload
+
+> Source: https://abp.io/docs/10.2/modules/ai-management#rag-with-file-upload
+
+The AI Management module supports RAG (Retrieval-Augmented Generation), which enables workspaces to answer questions based on the content of uploaded documents. When RAG is configured, the AI model searches the uploaded documents for relevant information before generating a response.
+
+### Prerequisites
+
+RAG requires **both** an embedder and a vector store configured on the workspace:
+
+- **Embedder**: Converts documents and queries into vector embeddings. Any provider supporting embedding generation (e.g., OpenAI `text-embedding-3-small`, Ollama `nomic-embed-text`).
+- **Vector Store**: Stores and retrieves vector embeddings. Supported built-in providers: `MongoDb`, `Pgvector`, `Qdrant`.
+
+> **Important**: Available provider names in workspace settings come from **registered factories at startup**. Built-in names are `OpenAI` and `Ollama` for embedding; `MongoDb`, `Pgvector`, and `Qdrant` for vector stores.  
+> These names only appear in the UI dropdowns when the corresponding packages are installed.
+
+### Installing RAG Dependencies
+
+Install embedding provider (already needed for chat, Ollama covers both chat + embeddings):
+
+```bash
+abp add-package Volo.AIManagement.OpenAI
+# or
+abp add-package Volo.AIManagement.Ollama
+```
+
+Install vector store package (pick one):
+
+```bash
+abp add-package Volo.AIManagement.VectorStores.Pgvector
+# or
+abp add-package Volo.AIManagement.VectorStores.MongoDB
+# or
+abp add-package Volo.AIManagement.VectorStores.Qdrant
+```
+
+> ❌ **Do NOT** create custom `IVectorStoreFactory` / `IEmbeddingClientFactory` implementations when official packages exist — install the relevant package instead.
+
+### Supported File Formats (defaults)
+
+| Extension | MIME Type |
+|-----------|-----------|
+| `.pdf` | `application/pdf` |
+| `.md` | `text/markdown` |
+| `.txt` | `text/plain` |
+
+Default max file size: **10 MB**. Both are configurable via `WorkspaceDataSourceOptions`.
+
+### Configuring RAG on a Workspace (UI)
+
+1. Navigate to **AI Management → Workspaces** → Create or Edit a workspace.
+2. On the **Embedder** tab:
+   - **Embedder Provider**: e.g., `Ollama` or `OpenAI`
+   - **Embedder Model Name**: e.g., `nomic-embed-text` (Ollama), `text-embedding-3-small` (OpenAI)
+   - **Embedder Base URL**: e.g., `http://localhost:11434` (only needed for non-default endpoints)
+3. On the **Vector Store** tab:
+   - **Vector Store Provider**: e.g., `Pgvector`
+   - **Vector Store Settings**: Provider-specific connection string:
+     - **Pgvector**: Standard Npgsql connection string — `Host=localhost;Port=5432;Database=ragdb;Username=postgres;Password=postgres`
+     - **MongoDB**: Standard MongoDB connection string including database name
+     - **Qdrant**: Endpoint string — `http://host:port`, `https://host:port`, or `host:port`
+
+> ⚠️ `VectorStoreSettings` for Pgvector is a **plain PostgreSQL/Npgsql connection string**, NOT JSON.
+
+### Document Processing Pipeline
+
+When a file is uploaded as a workspace data source:
+
+1. File stored in blob storage.
+2. `IndexDocumentJob` queued.
+3. `DocumentProcessingManager` extracts text via content-type extractors.
+4. Text chunked (default: chunk size `1000`, overlap `200`).
+5. Embeddings generated in batches and stored via the configured vector store.
+6. Data source marked as `IsProcessed = true`.
+
+### Chat Integration Behavior
+
+- AI Management wraps the chat client with a tool named `search_workspace_documents`.
+- The tool delegates to `IDocumentSearchService` with `TopK = 5` chunks.
+- If RAG retrieval fails, chat continues without injected context.
+- RAG metadata returned: `HasRagContext`, `RagChunkCount`.
+
+### Uploading Documents via UI
+
+Navigate to the workspace then click **Data Sources** (or `/AIManagement/WorkspaceDataSources?WorkspaceId={id}`). Uploaded files are auto-processed and indexed.
+
+### Workspace Data Source HTTP API
+
+All endpoints under `/api/ai-management/workspace-data-sources`:
+
+| Method | Path | Action |
+|--------|------|--------|
+| `POST` | `/workspace/{workspaceId}` | Upload new file |
+| `GET` | `/by-workspace/{workspaceId}` | List data sources |
+| `GET` | `/{id}` | Get data source |
+| `PUT` | `/{id}` | Update metadata |
+| `DELETE` | `/{id}` | Delete (removes embeddings, chunks, blob) |
+| `GET` | `/{id}/download` | Download original file |
+| `POST` | `/{id}/reindex` | Re-index single file |
+| `POST` | `/workspace/{workspaceId}/reindex-all` | Re-index all files |
+
+### Customising Upload Options
+
+```csharp
+Configure<WorkspaceDataSourceOptions>(options =>
+{
+    options.AllowedFileExtensions = new[] { ".txt", ".md", ".pdf", ".docx", ".csv" };
+    options.MaxFileSize = 50 * 1024 * 1024; // 50 MB
+    options.ContentTypeMap[".docx"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    options.ContentTypeMap[".csv"] = "text/csv";
+});
+```
+
+> Adding new file extensions also requires a matching content extractor — built-in extractors cover `.txt`, `.md`, `.pdf`.
+
+### Automatic Reindexing on Configuration Changes
+
+When workspace embedder or vector store config changes, AI Management automatically:
+- Initializes the new vector store configuration (if needed).
+- Deletes existing embeddings when embedder provider/model changes.
+- Re-queues all workspace data sources for re-indexing.
+
+---
+
 ## Anti-Patterns / Common Mistakes
 
 | ❌ Don't | ✅ Do Instead |
@@ -513,7 +637,9 @@ dotnet run --project src/MVCAllOptions.DbMigrator
 
 | Resource | URL |
 |----------|-----|
-| AI Management (Pro) Docs | https://abp.io/docs/latest/modules/ai-management |
+| AI Management (Pro) Docs (10.2) | https://abp.io/docs/10.2/modules/ai-management |
+| AI Management RAG with File Upload (10.2) | https://abp.io/docs/10.2/modules/ai-management#rag-with-file-upload |
+| AI Management (Pro) Docs (latest) | https://abp.io/docs/latest/modules/ai-management |
 | AI Infrastructure Base | https://abp.io/docs/latest/framework/infrastructure/artificial-intelligence |
 | Microsoft.Extensions.AI | https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai |
 | Microsoft Agent Framework | https://learn.microsoft.com/en-us/agent-framework/ |

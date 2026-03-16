@@ -483,8 +483,15 @@ public class MVCAllOptionsWebModule : AbpModule
         // Manually update AI providers for the application. No need to do this in the newer versions than v10.0.1.
         var appAIProviderManager = context.ServiceProvider.GetRequiredService<Volo.AIManagement.ApplicationWorkspaceProviders.ApplicationAIProviderManager>();
         var appInfoAccessor = context.ServiceProvider.GetRequiredService<IApplicationInfoAccessor>();
-        var factoryOptions = context.ServiceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<Volo.AIManagement.Factory.ChatClientFactoryOptions>>();
-        await appAIProviderManager.UpdateProvidersAsync(appInfoAccessor.ApplicationName!, factoryOptions.Value.Factories.Keys.ToArray());
+        var chatFactoryOptions = context.ServiceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<Volo.AIManagement.Factory.ChatClientFactoryOptions>>();
+        var embeddingFactoryOptions = context.ServiceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<Volo.AIManagement.Embeddings.EmbeddingClientFactoryOptions>>();
+        var vectorStoreFactoryOptions = context.ServiceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<Volo.AIManagement.VectorStores.VectorStoreFactoryOptions>>();
+        await appAIProviderManager.UpdateProvidersAsync(
+            appInfoAccessor.ApplicationName!,
+            chatFactoryOptions.Value.Factories.Keys.ToArray(),
+            embeddingFactoryOptions.Value.Factories.Keys.ToArray(),
+            vectorStoreFactoryOptions.Value.Factories.Keys.ToArray()
+        );
     }
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
