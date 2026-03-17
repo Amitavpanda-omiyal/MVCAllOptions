@@ -1,127 +1,140 @@
 using System;
-using System.Collections.Generic;
+using System.ClientModel;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Agents.AI.Workflows;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using MVCAllOptions.AI.Workflows.BookEnrichmentWorkflow;
+using MVCAllOptions.AI;
+using MVCAllOptions.AI.Workflows.BookVerificationWorkflow;
+using OpenAI;
+using Volo.Abp.Caching;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus.Distributed;
-using MEChatMessage = Microsoft.Extensions.AI.ChatMessage;
-using MEChatRole    = Microsoft.Extensions.AI.ChatRole;
+using Volo.AIManagement.Workspaces.Configuration;
 
 namespace MVCAllOptions.Books;
 
 /// <summary>
 /// Handles the <see cref="BookCreatedEto"/> distributed event and triggers
-/// the MAF Book Enrichment Workflow in-process.
+/// the MAF Book Verification Workflow in-process.
 ///
 /// Fire-and-forget: book creation is never blocked by the AI pipeline.
-/// Results are written to the application logger (visible in console / logs.txt / ABP Studio).
+/// The verification result is stored in the distributed cache so that
+/// <see cref="MVCAllOptions.AI.BookContextChatClient"/> can surface it in the
+/// Chat Playground on the OpenAIRAGWorkspace page.
 /// </summary>
 public class BookCreatedEventHandler :
     IDistributedEventHandler<BookCreatedEto>,
     ITransientDependency
 {
-    private readonly IConfiguration _configuration;
+    private readonly IWorkspaceConfigurationStore _configStore;
+    private readonly IDistributedCache<BookVerificationCacheItem> _verificationCache;
     private readonly ILogger<BookCreatedEventHandler> _logger;
 
     public BookCreatedEventHandler(
-        IConfiguration configuration,
+        IWorkspaceConfigurationStore configStore,
+        IDistributedCache<BookVerificationCacheItem> verificationCache,
         ILogger<BookCreatedEventHandler> logger)
     {
-        _configuration = configuration;
-        _logger = logger;
+        _configStore       = configStore;
+        _verificationCache = verificationCache;
+        _logger            = logger;
     }
 
-    public Task HandleEventAsync(BookCreatedEto eventData)
+    public async Task HandleEventAsync(BookCreatedEto eventData)
     {
-        // Serialize the event data as JSON — the BookDataExtractor agent
-        // accepts both JSON and natural language; JSON is the fast path.
-        var input = JsonSerializer.Serialize(new BookCreatedInput(
-            Name:        eventData.Name,
-            Type:        eventData.Type,
-            Price:       eventData.Price,
-            PublishDate: eventData.PublishDate));
-
         var bookName = eventData.Name;
+
+        // Resolve workspace config on the request thread (scoped services available here)
+        // so we can safely pass plain values into the background Task.
+        var config = await _configStore.GetOrNullAsync("OpenAIRAGWorkspace");
+        if (config is null)
+        {
+            _logger.LogWarning(
+                "[BookVerification] OpenAIRAGWorkspace config not found — skipping verification for \"{BookName}\"",
+                bookName);
+            return;
+        }
+
+        var apiKey  = config.ApiKey    ?? string.Empty;
+        var baseUrl = config.ApiBaseUrl ?? "https://api.openai.com/v1";
+        var model   = config.ModelName  ?? "gpt-4o-mini";
 
         // Fire-and-forget: return immediately so book creation is not blocked.
         _ = Task.Run(async () =>
         {
-            _logger.LogInformation("[MAF] ═══ BookEnrichmentWorkflow starting for \"{BookName}\" ═══", bookName);
+            _logger.LogInformation(
+                "[MAF Workflow] ══════════════════════════════════════════════");
+            _logger.LogInformation(
+                "[MAF Workflow] ► BookVerificationWorkflow STARTED for '{BookName}'", bookName);
+            _logger.LogInformation(
+                "[MAF Workflow] Pipeline: BookExistenceVerifier → BookSuggestion");
+            _logger.LogInformation(
+                "[MAF Workflow] Model: {Model} | Workspace: OpenAIRAGWorkspace", model);
+            _logger.LogInformation(
+                "[MAF Workflow] ══════════════════════════════════════════════");
             try
             {
-                var workflow = BookEnrichmentWorkflowFactory.Create(_configuration);
+                var chatClient = new OpenAIClient(
+                        new ApiKeyCredential(apiKey),
+                        new OpenAIClientOptions { Endpoint = new Uri(baseUrl) })
+                    .GetChatClient(model);
 
-                // RunAsync<TInput> — TInput is the input type (string JSON for this workflow).
-                // The workflow routes the string through 3 sequential AIAgents.
+                var workflow = BookVerificationWorkflowFactory.Create(chatClient, _logger);
+
                 await using var run = await InProcessExecution.RunAsync<string>(
-                    workflow, input, Guid.NewGuid().ToString());
+                    workflow, bookName, Guid.NewGuid().ToString());
 
-                // Collect all outgoing events and log them for visibility.
-                var events = run.OutgoingEvents.ToList();
-                _logger.LogInformation("[MAF] ─── Workflow finished with {Count} outgoing events ───", events.Count);
+                var outputEvent = run.OutgoingEvents
+                    .OfType<WorkflowOutputEvent>()
+                    .FirstOrDefault(e => e.Is<BookVerificationFinalResult>());
 
-                // Log every event so we can diagnose failures or capture output
-                foreach (var evt in events)
-                {
-                    var evtType = evt.GetType().Name;
-                    var evtStr  = evt.ToString() ?? "";
-
-                    if (evtType.Contains("Error") || evtType.Contains("Failed"))
-                        _logger.LogError("[MAF] ✗ {EventType}: {Detail}", evtType, evtStr);
-                    else if (evtType == "WorkflowOutputEvent")
-                        _logger.LogInformation("[MAF] ✓ OUTPUT: {Detail}", evtStr);
-                    else
-                        _logger.LogDebug("[MAF] {EventType}: {Detail}", evtType, evtStr);
-                }
-
-                var replied = false;
-                foreach (var evt in events)
-                {
-                    // WorkflowOutputEvent carries the final output — log it directly.
-                    if (evt is WorkflowOutputEvent outputEvent)
-                    {
-                        if (outputEvent.Is<string>(out var text) && !string.IsNullOrWhiteSpace(text))
-                        {
-                            _logger.LogInformation("[MAF] Workflow output:\n{Text}", text);
-                            replied = true;
-                        }
-                        else if (outputEvent.Is<List<MEChatMessage>>(out var msgs) && msgs is { Count: > 0 })
-                        {
-                            var assistants = msgs.Where(m => m.Role == MEChatRole.Assistant).ToList();
-                            for (int i = 0; i < assistants.Count; i++)
-                            {
-                                var msgText = string.Join("", assistants[i].Contents.Select(c => c.ToString())).Trim();
-                                _logger.LogInformation("[MAF] Agent reply #{Index}:\n{Text}", i + 1, msgText);
-                            }
-                            replied = true;
-                        }
-                    }
-                }
-
-                if (!replied)
+                if (outputEvent is null || !outputEvent.Is<BookVerificationFinalResult>(out var result))
                 {
                     _logger.LogWarning(
-                        "[MAF] ⚠ No output captured for \"{BookName}\" from {Count} events. " +
-                        "Event types: {Types}",
-                        bookName,
-                        events.Count,
-                        string.Join(", ", events.Select(e => e.GetType().Name).Distinct()));
+                        "[BookVerification] No output event captured for \"{BookName}\"", bookName);
+                    return;
                 }
 
-                _logger.LogInformation("[MAF] ═══ BookEnrichmentWorkflow complete for \"{BookName}\" ═══", bookName);
+                _logger.LogInformation(
+                    "[BookVerification] Result for \"{BookName}\": {Summary}", bookName, result!.Summary);
+
+                // Cache for 7 days — BookContextChatClient reads this on every chat request
+                var cacheItem = new BookVerificationCacheItem
+                {
+                    BookName              = result.BookName,
+                    ExistsInRealWorld    = result.ExistsInRealWorld,
+                    PublisherName        = result.PublisherName,
+                    PublicationDate      = result.PublicationDate,
+                    SuggestedAlternatives = result.SuggestedAlternatives,
+                    Summary              = result.Summary,
+                    VerifiedAt           = DateTime.UtcNow,
+                };
+
+                await _verificationCache.SetAsync(
+                    key: $"book:{bookName}",
+                    value: cacheItem,
+                    options: new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7),
+                    });
+
+                _logger.LogInformation(
+                    "[MAF Workflow] ══════════════════════════════════════════════");
+                _logger.LogInformation(
+                    "[MAF Workflow] ✔ BookVerificationWorkflow COMPLETED for '{BookName}'", bookName);
+                _logger.LogInformation(
+                    "[MAF Workflow] Result cached for 7 days under key 'book:{BookName}'", bookName);
+                _logger.LogInformation(
+                    "[MAF Workflow] ══════════════════════════════════════════════");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[MAF] BookEnrichmentWorkflow failed for \"{BookName}\"", bookName);
+                _logger.LogError(ex,
+                    "[BookVerification] Workflow failed for \"{BookName}\"", bookName);
             }
         });
-
-        return Task.CompletedTask;
     }
 }
 

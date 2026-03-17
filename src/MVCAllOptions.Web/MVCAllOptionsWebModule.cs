@@ -285,6 +285,7 @@ public class MVCAllOptionsWebModule : AbpModule
                 bundle =>
                 {
                     bundle.AddFiles("/global-scripts.js");
+                    bundle.AddFiles("/Pages/AI/workspace-auto-message.js");
                     if (hostingEnvironment.IsDevelopment())
                     {
                         bundle.AddFiles("/dev-login-helper.js");

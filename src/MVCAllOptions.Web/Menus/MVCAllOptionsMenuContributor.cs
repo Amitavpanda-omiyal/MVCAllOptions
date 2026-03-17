@@ -104,11 +104,11 @@ public class MVCAllOptionsMenuContributor : IMenuContributor
                 l["Menu:MVCAllOptions"],
                 icon: "fa fa-book"
             ).AddItem(
-            new ApplicationMenuItem(
-                "BooksStore.Books",
-                l["Menu:Books"],
-                url: "/Books"
-                ).RequirePermissions(MVCAllOptionsPermissions.Books.Default) 
+                new ApplicationMenuItem(
+                    "BooksStore.Books",
+                    l["Menu:Books"],
+                    url: "/Books"
+                ).RequirePermissions(MVCAllOptionsPermissions.Books.Default)
             )
         );
         

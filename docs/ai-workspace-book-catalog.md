@@ -25,6 +25,15 @@ This is a custom `IChatClientFactory` registered for provider `"OpenAI"`.
 It does three things:
 1. Creates the real OpenAI `IChatClient`.
 2. Wraps it with `BookContextChatClient` when the workspace name is `OpenAIRAGWorkspace`.
+
+   ```csharp
+   if (string.Equals(configuration.Name, "OpenAIRAGWorkspace", StringComparison.Ordinal))
+   {
+       innerClient = new BookContextChatClient(innerClient, _scopeFactory);
+   }
+   ```
+
+   That conditional is the *exact place* to add support for additional workspaces.
 3. Wraps everything with `FunctionInvokingChatClient` (required by ABP’s RAG/document tools pipeline).
 
 
@@ -96,6 +105,58 @@ innerClient = new BookContextChatClient(innerClient, _scopeFactory);
 2. Visit `https://localhost:44324/AIManagement/Workspaces/OpenAIRAGWorkspace`.
 3. Send a prompt like: **“What books do you have? List all with prices.”**
 4. Confirm the response includes your DB books.
+
+---
+
+## Line-by-line runtime walkthrough (what happens when you send a chat)
+
+### 1) Send message from the UI
+The browser calls ABP’s chat endpoint (e.g. `/api/chat-completion/stream/start`) with:
+- `workspaceName = "OpenAIRAGWorkspace"`
+- the user message
+- any chat options (streaming, etc.)
+
+### 2) ABP loads the workspace and chooses the Chat Client factory
+ABP AI Management:
+1. Loads the workspace record `OpenAIRAGWorkspace` from the DB.
+2. Reads `Provider = "OpenAI"`.
+3. Looks up `ChatClientFactoryOptions.Factories["OpenAI"]`.
+
+That factory is our custom class:
+`BookAwareOpenAIChatClientFactory`.
+
+### 3) The factory builds the pipeline
+**File:** `BookAwareOpenAIChatClientFactory.cs`
+
+The factory does:
+1. Creates the real OpenAI chat client.
+2. If `configuration.Name == "OpenAIRAGWorkspace"`, it wraps it in `BookContextChatClient`.
+3. Wraps everything in `FunctionInvokingChatClient` (required by ABP’s RAG/tool support).
+
+So the runtime chain becomes:
+
+```
+FunctionInvokingChatClient
+  └─ BookContextChatClient
+       └─ OpenAI ChatClient
+```
+
+### 4) BookContextChatClient injects the catalogue
+**File:** `BookContextChatClient.cs`
+
+`BookContextChatClient` intercepts the message before it hits OpenAI.
+
+- It creates a DI scope using `IServiceScopeFactory`.
+- It loads all books using `IRepository<Book, Guid>.GetListAsync()`.
+- It formats a system message containing the full catalog.
+- It prepends that system message to the user message.
+
+So the model receives a message list like:
+1) System: "Here is the full catalog..."
+2) User: "What books do you have?"
+
+### 5) OpenAI generates a response
+Because the model sees the catalog in the system message, it can answer accurately (e.g., list titles + prices).
 
 ---
 

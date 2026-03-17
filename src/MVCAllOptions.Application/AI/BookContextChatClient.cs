@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using MVCAllOptions.Books;
+using Volo.Abp.Caching;
 using Volo.Abp.Domain.Repositories;
 
 namespace MVCAllOptions.AI;
@@ -14,7 +16,7 @@ namespace MVCAllOptions.AI;
 /// <summary>
 /// Wraps an inner <see cref="IChatClient"/> and prepends book catalogue data as a system message.
 /// Used by the OpenAIRAGWorkspace so the built-in AI Management Chat Playground
-/// is automatically aware of books from the database.
+/// is automatically aware of books from the database and their real-world verification status.
 /// </summary>
 public class BookContextChatClient : DelegatingChatClient
 {
@@ -56,6 +58,24 @@ public class BookContextChatClient : DelegatingChatClient
         var catalogue = string.Join("\n", books.Select(b =>
             $"- {b.Name} | Genre: {b.Type} | Price: ${b.Price:F2} | Published: {b.PublishDate:yyyy-MM-dd}"));
 
+        // Load verification results from distributed cache
+        var verificationCache = scope.ServiceProvider
+            .GetRequiredService<IDistributedCache<BookVerificationCacheItem>>();
+
+        var verificationSection = new StringBuilder();
+        foreach (var book in books)
+        {
+            var cacheItem = await verificationCache.GetAsync($"book:{book.Name}");
+            if (cacheItem is not null)
+            {
+                verificationSection.AppendLine($"  - {cacheItem.Summary}");
+            }
+        }
+
+        var verificationText = verificationSection.Length > 0
+            ? $"\n\nRECENT BOOK VERIFICATIONS (from background AI check):\n{verificationSection}"
+            : string.Empty;
+
         var systemMessage = new ChatMessage(ChatRole.System, $"""
             You are a knowledgeable bookstore assistant for MVCAllOptions Bookstore.
             You have access to the complete book catalogue below.
@@ -64,7 +84,7 @@ public class BookContextChatClient : DelegatingChatClient
             Be concise, friendly, and helpful.
 
             Current catalogue:
-            {catalogue}
+            {catalogue}{verificationText}
             """);
 
         var result = new List<ChatMessage> { systemMessage };
