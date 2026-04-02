@@ -7,30 +7,30 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MVCAllOptions.Application.Contracts\MVCAllOptions.Application.Contracts.csproj" />
-    <PackageReference Include="Volo.Forms.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Elsa.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Admin.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.HttpApi" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Forms.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Elsa.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Admin.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.HttpApi" Version="10.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="10.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Identity.Pro.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Admin.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.AuditLogging.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.OpenIddict.Pro.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.LanguageManagement.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.FileManagement.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Saas.Host.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Chat.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.TextTemplateManagement.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Gdpr.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Public.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.CmsKit.Pro.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.AIManagement.HttpApi" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.AIManagement.Client.HttpApi" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Abp.Identity.Pro.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Admin.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.AuditLogging.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.OpenIddict.Pro.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.LanguageManagement.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.FileManagement.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Saas.Host.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Chat.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.TextTemplateManagement.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Gdpr.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Public.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.CmsKit.Pro.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.AIManagement.HttpApi" Version="10.2.0" />
+    <PackageReference Include="Volo.AIManagement.Client.HttpApi" Version="10.2.0" />
   </ItemGroup>
 </Project>

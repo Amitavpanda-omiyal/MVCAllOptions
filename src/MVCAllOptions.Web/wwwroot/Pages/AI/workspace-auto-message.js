@@ -3,7 +3,7 @@
  *
  * When a user navigates to an AI Management workspace chat page
  * (e.g. /AIManagement/Workspaces/OpenAIRAGWorkspace), this script
- * automatically asks about recently verified books by populating the
+ * automatically asks about recently  verified books by populating the
  * chat input and clicking the Send button.
  */
 (function () {

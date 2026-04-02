@@ -2,7 +2,7 @@
   "template": "app",
   "imports": {
     "Volo.Abp.LeptonXTheme": {
-      "version": "5.2.0-rc.1",
+      "version": "5.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
@@ -12,95 +12,95 @@
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.AIManagement": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Chat": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.LanguageManagement": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.FileManagement": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.OpenIddict.Pro": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.Gdpr": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.AuditLogging.Pro": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.CmsKit.Pro": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Saas": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.Identity.Pro": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.Account.Pro": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.SettingManagement": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.PermissionManagement": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Abp.FeatureManagement": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true,
       "creationTime": "03/04/2026 07:59:10 +00:00"
     },
     "Volo.Forms": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true
     },
     "Volo.Abp.Elsa": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true
     },
     "Volo.Payment": {
-      "version": "10.2.0-rc.1",
+      "version": "10.2.0",
       "isInstalled": true
     },
     "Volo.Abp.Sms.Twilio": {
-      "version": "10.1.1"
+      "version": "10.2.0"
     },
     "Volo.Blogging": {
-      "version": "10.2.0-rc.1"
+      "version": "10.2.0"
     },
     "Volo.Docs": {
-      "version": "10.2.0-rc.1"
+      "version": "10.2.0"
     }
   },
   "folders": {

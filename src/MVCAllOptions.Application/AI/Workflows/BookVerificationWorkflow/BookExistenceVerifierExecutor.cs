@@ -92,7 +92,6 @@ internal sealed class BookExistenceVerifierExecutor(ChatClient chatClient, ILogg
         logger.LogInformation(
             "[MAF Step 1/2 ► BookExistenceVerifier] Result for '{BookName}': Exists={Exists}, Publisher='{Publisher}', Date='{Date}'",
             bookName, exists, publisher, pubDate);
-
         return new BookVerificationResult(bookName, exists, publisher, pubDate, rawText);
     }
 }

@@ -7,28 +7,28 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MVCAllOptions.Domain.Shared\MVCAllOptions.Domain.Shared.csproj" />
-    <PackageReference Include="Volo.Forms.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Elsa.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Admin.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Application.Contracts" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Forms.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Elsa.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Admin.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Application.Contracts" Version="10.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.PermissionManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.SettingManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Identity.Pro.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Public.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Admin.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Chat.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Saas.Host.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.AuditLogging.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.OpenIddict.Pro.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.LanguageManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.FileManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.TextTemplateManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Gdpr.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.CmsKit.Pro.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.AIManagement.Application.Contracts" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.AIManagement.Client.Application.Contracts" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Identity.Pro.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Public.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Admin.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Chat.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Saas.Host.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.AuditLogging.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.OpenIddict.Pro.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.LanguageManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.FileManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.TextTemplateManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Gdpr.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.CmsKit.Pro.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.AIManagement.Application.Contracts" Version="10.2.0" />
+    <PackageReference Include="Volo.AIManagement.Client.Application.Contracts" Version="10.2.0" />
   </ItemGroup>
 </Project>

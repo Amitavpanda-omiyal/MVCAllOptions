@@ -54,44 +54,44 @@
     <ProjectReference Include="..\MVCAllOptions.Application\MVCAllOptions.Application.csproj" />
     <ProjectReference Include="..\MVCAllOptions.HttpApi\MVCAllOptions.HttpApi.csproj" />
     <ProjectReference Include="..\MVCAllOptions.EntityFrameworkCore\MVCAllOptions.EntityFrameworkCore.csproj" />
-    <PackageReference Include="Volo.Forms.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Elsa.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Payu.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.TwoCheckout.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.PayPal.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Stripe.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Iyzico.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Admin.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Payment.Web" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Forms.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Elsa.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Payu.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.TwoCheckout.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.PayPal.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Stripe.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Iyzico.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Admin.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Payment.Web" Version="10.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Caching.StackExchangeRedis" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.DistributedLocking" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Autofac" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Swashbuckle" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.Web" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Abp.Caching.StackExchangeRedis" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.DistributedLocking" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Swashbuckle" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Web" Version="10.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonX" Version="5.2.0-rc.1" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonX" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Account.Pro.Admin.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Account.Pro.Public.Web.OpenIddict" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Identity.Pro.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.AuditLogging.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.OpenIddict.Pro.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.LanguageManagement.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.FileManagement.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Saas.Host.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Chat.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Chat.SignalR" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.TextTemplateManagement.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.Abp.Gdpr.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.CmsKit.Pro.Admin.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.AIManagement.Web" Version="10.2.0-rc.1" />
-    <PackageReference Include="Volo.AIManagement.Client.Web" Version="10.2.0-rc.1" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Admin.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Public.Web.OpenIddict" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Identity.Pro.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.AuditLogging.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.OpenIddict.Pro.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.LanguageManagement.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.FileManagement.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Saas.Host.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Chat.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Chat.SignalR" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.TextTemplateManagement.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.Abp.Gdpr.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.CmsKit.Pro.Admin.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.AIManagement.Web" Version="10.2.0" />
+    <PackageReference Include="Volo.AIManagement.Client.Web" Version="10.2.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Volo.Abp.Studio.Client.AspNetCore" Version="2.2.1" />
